@@ -388,3 +388,20 @@ single-binary topologies via separate descriptor sets.
 **Out:** inference/DRAIN as an engine, auto-generated `values.schema.json` from Tempo's config
 struct, chart signing/provenance, a bespoke descriptor DSL/LSP/GUI, and any policy about
 committing/gating/publishing (consumer-owned).
+
+## 14. Roadmap & progress (multi-session tracker)
+
+The total effort is split into sequential plans so it survives across sessions. The
+interchange schema is the contract; the consumer (stamper) is built first so the contract is
+locked before the producer (jsonnet) targets it.
+
+| # | Plan | Scope | Status | Doc |
+|---|------|-------|--------|-----|
+| 1 | Stamper core | interchange JSON → validated, deterministic Helm chart on disk: types, schema validation, hole substitution (closed render-mode set), values.yaml + values.schema.json, Chart.yaml + _helpers.tpl, deterministic emit, `--check` drift, optional `helm lint`/`kubeconform`, CLI. Tested against hand-written fixtures. | 📋 Planned | `docs/superpowers/plans/2026-06-29-helm-stamper-core.md` |
+| 2 | Jsonnet authoring layer | `helm.value(path, default, schema)` helper, interchange emitter (Alloy-style manifest), starter generator library (deployment, statefulset, service, configmap, vpa, pdb, servicemonitor), the config-mount primitive (§8) wired through generators. Targets the Plan 1 schema. | ⏳ Not started | _to be written_ |
+| 3 | Tempo descriptors + example wiring | Tempo microservices and single-binary descriptor sets, `make helm-stamp` example, docs. Lives partly in this repo (example) and partly in the Tempo repo (real descriptors). | ⏳ Not started | _to be written_ |
+
+Status legend: ✅ done · 🚧 in progress · 📋 planned (plan written) · ⏳ not started.
+
+When a plan completes, update its row to ✅ and note the key deliverables here so a future
+session can resume without re-reading the whole history.
