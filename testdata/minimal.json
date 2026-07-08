@@ -1,0 +1,17 @@
+{
+  "chart": { "name": "demo", "version": "0.1.0" },
+  "components": { "web": { "enabled": true, "workload": "Deployment" } },
+  "resources": [
+    {
+      "file": "templates/web/deployment.yaml",
+      "component": "web",
+      "gvk": "apps/v1/Deployment",
+      "gate": "web.enabled",
+      "manifest": { "apiVersion": "apps/v1", "kind": "Deployment", "spec": { "replicas": 0 } },
+      "holes": [
+        { "path": "web.replicas", "pointer": "/spec/replicas", "default": 3,
+          "schema": { "type": "integer", "minimum": 1 } }
+      ]
+    }
+  ]
+}
