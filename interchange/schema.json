@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["chart", "resources"],
+  "additionalProperties": false,
+  "properties": {
+    "chart": {
+      "type": "object",
+      "required": ["name", "version"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "minLength": 1 },
+        "appVersion": { "type": "string" },
+        "description": { "type": "string" },
+        "kubeVersion": { "type": "string" }
+      }
+    },
+    "components": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "enabled": { "type": "boolean" },
+          "workload": { "type": "string" }
+        }
+      }
+    },
+    "resources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["file", "manifest"],
+        "additionalProperties": false,
+        "properties": {
+          "file": { "type": "string", "minLength": 1 },
+          "component": { "type": "string" },
+          "gvk": { "type": "string" },
+          "gate": { "type": "string" },
+          "manifest": { "type": "object" },
+          "holes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["path", "pointer"],
+              "additionalProperties": false,
+              "properties": {
+                "path": { "type": "string", "minLength": 1 },
+                "pointer": { "type": "string", "pattern": "^/" },
+                "default": {},
+                "schema": { "type": "object" },
+                "render": { "enum": ["scalar", "block", "quote", "with", "raw"] },
+                "raw": { "type": "string" },
+                "required": { "type": "boolean" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
