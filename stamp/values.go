@@ -2,6 +2,7 @@ package stamp
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/zalegrala/helmitis/interchange"
@@ -40,7 +41,13 @@ func marshalValues(v map[string]interface{}) ([]byte, error) {
 // buildValues folds component gates and hole defaults into a nested values map.
 func buildValues(doc interchange.Document) (map[string]interface{}, error) {
 	root := map[string]interface{}{}
-	for name, c := range doc.Components {
+	names := make([]string, 0, len(doc.Components))
+	for name := range doc.Components {
+		names = append(names, name)
+	}
+	sort.Strings(names)
+	for _, name := range names {
+		c := doc.Components[name]
 		if err := setDotted(root, name+".enabled", c.Enabled); err != nil {
 			return nil, err
 		}

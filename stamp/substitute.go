@@ -16,9 +16,13 @@ func substitute(yamlText string, holes []interchange.Hole, tokens map[int]string
 		tok := tokens[i]
 		switch renderMode(h) {
 		case "scalar", "quote":
-			replaceTokenInline(lines, tok, inlineExpr(h))
+			if err := replaceTokenInline(lines, tok, inlineExpr(h)); err != nil {
+				return "", fmt.Errorf("hole %q: %w", h.Path, err)
+			}
 		case "raw":
-			replaceTokenInline(lines, tok, h.Raw)
+			if err := replaceTokenInline(lines, tok, h.Raw); err != nil {
+				return "", fmt.Errorf("hole %q: %w", h.Path, err)
+			}
 		case "block", "with":
 			var err error
 			lines, err = replaceTokenBlock(lines, tok, h)
@@ -32,13 +36,14 @@ func substitute(yamlText string, holes []interchange.Hole, tokens map[int]string
 	return strings.Join(lines, "\n"), nil
 }
 
-func replaceTokenInline(lines []string, tok, expr string) {
+func replaceTokenInline(lines []string, tok, expr string) error {
 	for i, line := range lines {
 		if strings.Contains(line, tok) {
 			lines[i] = strings.Replace(line, tok, expr, 1)
-			return
+			return nil
 		}
 	}
+	return fmt.Errorf("sentinel %q not found in rendered YAML", tok)
 }
 
 // replaceTokenBlock replaces a whole "key: TOKEN" line with a block-rendered

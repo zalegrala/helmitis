@@ -8,8 +8,8 @@ import (
 
 type Document struct {
 	Chart      Chart                `json:"chart"`
-	Components map[string]Component  `json:"components"`
-	Resources  []Resource            `json:"resources"`
+	Components map[string]Component `json:"components"`
+	Resources  []Resource           `json:"resources"`
 }
 
 type Chart struct {

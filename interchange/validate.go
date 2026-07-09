@@ -5,6 +5,7 @@ import (
 	_ "embed"
 	"encoding/json"
 	"fmt"
+	"sync"
 
 	"github.com/santhosh-tekuri/jsonschema/v6"
 )
@@ -12,24 +13,31 @@ import (
 //go:embed schema.json
 var schemaJSON []byte
 
-func compiledSchema() (*jsonschema.Schema, error) {
+type schemaResult struct {
+	schema *jsonschema.Schema
+	err    error
+}
+
+var getSchema = sync.OnceValue(func() schemaResult {
 	var raw interface{}
 	if err := json.Unmarshal(schemaJSON, &raw); err != nil {
-		return nil, err
+		return schemaResult{err: err}
 	}
 	c := jsonschema.NewCompiler()
 	if err := c.AddResource("interchange.json", raw); err != nil {
-		return nil, err
+		return schemaResult{err: err}
 	}
-	return c.Compile("interchange.json")
-}
+	s, err := c.Compile("interchange.json")
+	return schemaResult{schema: s, err: err}
+})
 
 // Validate checks raw interchange bytes against the embedded schema.
 func Validate(data []byte) error {
-	schema, err := compiledSchema()
-	if err != nil {
-		return fmt.Errorf("compile schema: %w", err)
+	res := getSchema()
+	if res.err != nil {
+		return fmt.Errorf("compile schema: %w", res.err)
 	}
+	schema := res.schema
 	var inst interface{}
 	dec := json.NewDecoder(bytes.NewReader(data))
 	if err := dec.Decode(&inst); err != nil {

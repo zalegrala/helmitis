@@ -39,7 +39,10 @@ func TestSetAtPointerMissing(t *testing.T) {
 
 func TestDeepCopyIsolates(t *testing.T) {
 	orig := map[string]interface{}{"a": map[string]interface{}{"b": float64(1)}}
-	cp := deepCopy(orig)
+	cp, err := deepCopy(orig)
+	if err != nil {
+		t.Fatal(err)
+	}
 	cp["a"].(map[string]interface{})["b"] = float64(2)
 	if orig["a"].(map[string]interface{})["b"] != float64(1) {
 		t.Error("deepCopy did not isolate nested map")

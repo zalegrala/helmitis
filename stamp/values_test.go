@@ -49,3 +49,29 @@ func TestBuildValues(t *testing.T) {
 		t.Errorf("vpa = %v", web["vpa"])
 	}
 }
+
+func TestBuildValuesTwoComponentsStable(t *testing.T) {
+	doc := interchange.Document{
+		Components: map[string]interchange.Component{
+			"web":      {Enabled: true, Workload: "Deployment"},
+			"ingester": {Enabled: false, Workload: "StatefulSet"},
+		},
+	}
+	a, err := buildValues(doc)
+	if err != nil {
+		t.Fatal(err)
+	}
+	b, err := buildValues(doc)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(a, b) {
+		t.Errorf("buildValues not stable:\n a=%#v\n b=%#v", a, b)
+	}
+	if a["web"].(map[string]interface{})["enabled"] != true {
+		t.Errorf("web.enabled = %v", a["web"])
+	}
+	if a["ingester"].(map[string]interface{})["enabled"] != false {
+		t.Errorf("ingester.enabled = %v", a["ingester"])
+	}
+}

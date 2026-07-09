@@ -63,3 +63,12 @@ func TestSubstituteWith(t *testing.T) {
 		}
 	}
 }
+
+func TestSubstituteMissingSentinelErrors(t *testing.T) {
+	yamlText := "spec:\n  replicas: 3\n" // no sentinel present
+	holes := []interchange.Hole{{Path: "web.replicas", Default: float64(3)}}
+	tokens := map[int]string{0: "HOLESENTINEL0END"}
+	if _, err := substitute(yamlText, holes, tokens); err == nil {
+		t.Fatal("expected error when sentinel is absent, got nil")
+	}
+}

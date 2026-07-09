@@ -11,7 +11,10 @@ import (
 // renderResource produces the final template-file content for one resource:
 // sentinel insertion -> deterministic YAML marshal -> hole substitution -> gate.
 func renderResource(r interchange.Resource) (string, error) {
-	m := deepCopy(r.Manifest)
+	m, err := deepCopy(r.Manifest)
+	if err != nil {
+		return "", fmt.Errorf("resource %s: %w", r.File, err)
+	}
 	tokens := make(map[int]string, len(r.Holes))
 	for i, h := range r.Holes {
 		tok := fmt.Sprintf("HOLESENTINEL%dEND", i)

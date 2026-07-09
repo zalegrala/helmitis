@@ -50,9 +50,14 @@ func setAtPointer(root interface{}, pointer string, val interface{}) error {
 }
 
 // deepCopy clones a JSON-shaped value via round-trip marshaling.
-func deepCopy(v map[string]interface{}) map[string]interface{} {
-	data, _ := json.Marshal(v)
+func deepCopy(v map[string]interface{}) (map[string]interface{}, error) {
+	data, err := json.Marshal(v)
+	if err != nil {
+		return nil, fmt.Errorf("deepCopy marshal: %w", err)
+	}
 	var out map[string]interface{}
-	_ = json.Unmarshal(data, &out)
-	return out
+	if err := json.Unmarshal(data, &out); err != nil {
+		return nil, fmt.Errorf("deepCopy unmarshal: %w", err)
+	}
+	return out, nil
 }
