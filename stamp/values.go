@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/zalegrala/helmitis/interchange"
+	"sigs.k8s.io/yaml"
 )
 
 // setDotted writes val into root following a dotted path, creating intermediate
@@ -29,6 +30,11 @@ func setDotted(root map[string]interface{}, dotted string, val interface{}) erro
 		}
 	}
 	return nil
+}
+
+// marshalValues serializes a values map to YAML bytes.
+func marshalValues(v map[string]interface{}) ([]byte, error) {
+	return yaml.Marshal(v)
 }
 
 // buildValues folds component gates and hole defaults into a nested values map.
