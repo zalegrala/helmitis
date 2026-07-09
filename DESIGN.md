@@ -397,7 +397,7 @@ locked before the producer (jsonnet) targets it.
 
 | # | Plan | Scope | Status | Doc |
 |---|------|-------|--------|-----|
-| 1 | Stamper core | interchange JSON → validated, deterministic Helm chart on disk: types, schema validation, hole substitution (closed render-mode set), values.yaml + values.schema.json, Chart.yaml + _helpers.tpl, deterministic emit, `--check` drift, optional `helm lint`/`kubeconform`, CLI. Tested against hand-written fixtures. | 📋 Planned | `docs/superpowers/plans/2026-06-29-helm-stamper-core.md` |
+| 1 | Stamper core | interchange JSON → validated, deterministic Helm chart on disk: types, schema validation, hole substitution (closed render-mode set), values.yaml + values.schema.json, Chart.yaml + _helpers.tpl, deterministic emit, `--check` drift, optional `helm lint`/`kubeconform`, CLI. Tested against hand-written fixtures. | ✅ Done (branch `feat/stamper-core`) | `docs/superpowers/plans/2026-06-29-helm-stamper-core.md` |
 | 2 | Jsonnet authoring layer | `helm.value(path, default, schema)` helper, interchange emitter (Alloy-style manifest), starter generator library (deployment, statefulset, service, configmap, vpa, pdb, servicemonitor), the config-mount primitive (§8) wired through generators. Targets the Plan 1 schema. | ⏳ Not started | _to be written_ |
 | 3 | Tempo descriptors + example wiring | Tempo microservices and single-binary descriptor sets, `make helm-stamp` example, docs. Lives partly in this repo (example) and partly in the Tempo repo (real descriptors). | ⏳ Not started | _to be written_ |
 
@@ -405,3 +405,24 @@ Status legend: ✅ done · 🚧 in progress · 📋 planned (plan written) · �
 
 When a plan completes, update its row to ✅ and note the key deliverables here so a future
 session can resume without re-reading the whole history.
+
+### Plan 1 deliverables (done)
+
+Packages `interchange` (types + embedded JSON-Schema validation) and `stamp` (the engine:
+JSON-Pointer sentinel substitution with the closed render-mode set, gate wrapping, values.yaml
+folding, values.schema.json, Chart.yaml, _helpers.tpl, deterministic `Build`, `Write`/`Check`
+drift), plus the `cmd/stamp` CLI (`--in`/`--jsonnet`/`--out`/`--check`/`--no-validate-output`).
+15 TDD tasks, all committed; a final code review was applied (missing-sentinel now errors,
+`deepCopy` is fallible, deterministic component ordering, cached schema).
+
+### Deferred to Plan 2 (hardening, from Plan 1's final review — not defects)
+
+- **Sentinel guessability:** `HOLESENTINEL<i>END` is a fixed, guessable token; if a real
+  manifest value ever contains it, substitution would corrupt silently. Harden to a
+  hash/nonce-based sentinel before the jsonnet producer feeds diverse manifests.
+- **`quote` + `required` interaction:** produces valid-but-redundant Helm; decide/test the
+  combination.
+- **Colon-in-key extraction** in `replaceTokenBlock`: derive the key from the JSON Pointer's
+  last token rather than splitting the marshaled line.
+- **Hole path shadowing a component gate** (e.g. a hole at `web.enabled`): add a validation
+  check or document the footgun.
