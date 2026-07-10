@@ -398,7 +398,8 @@ locked before the producer (jsonnet) targets it.
 | # | Plan | Scope | Status | Doc |
 |---|------|-------|--------|-----|
 | 1 | Stamper core | interchange JSON → validated, deterministic Helm chart on disk: types, schema validation, hole substitution (closed render-mode set), values.yaml + values.schema.json, Chart.yaml + _helpers.tpl, deterministic emit, `--check` drift, optional `helm lint`/`kubeconform`, CLI. Tested against hand-written fixtures. | ✅ Done (branch `feat/stamper-core`) | `docs/superpowers/plans/2026-06-29-helm-stamper-core.md` |
-| 2 | Jsonnet authoring layer | `helm.value(path, default, schema)` helper, interchange emitter (Alloy-style manifest), starter generator library (deployment, statefulset, service, configmap, vpa, pdb, servicemonitor), the config-mount primitive (§8) wired through generators. Targets the Plan 1 schema. | ⏳ Not started | _to be written_ |
+| 2a | Lowering pass | Inline `__cw_hole__` markers → Level-1 interchange (holes + JSON Pointers), wired into `Build`. | ✅ Done | `docs/superpowers/plans/2026-07-10-plan2a-lowering.md` |
+| 2b | Jsonnet authoring layer | `helm.value`/`required`/`raw`/`blockValue` helper, `chart.libsonnet` assembler, generators (deployment, service, statefulset, pdb), `examples/web`, jsonnet→installable-chart acceptance test. Config-mount primitive (§8) and CRD generators (vpa, servicemonitor) tracked as follow-ups. | 🚧 Core done | this file |
 | 3 | Tempo descriptors + example wiring | Tempo microservices and single-binary descriptor sets, `make helm-stamp` example, docs. Lives partly in this repo (example) and partly in the Tempo repo (real descriptors). | ⏳ Not started | _to be written_ |
 
 Status legend: ✅ done · 🚧 in progress · 📋 planned (plan written) · ⏳ not started.

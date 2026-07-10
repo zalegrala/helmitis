@@ -28,7 +28,9 @@ config rather than exposing every knob. See [`DESIGN.md`](./DESIGN.md) for the f
 | Component | Status |
 |-----------|--------|
 | Stamper core (interchange → chart) | ✅ working |
-| Jsonnet authoring layer (`helm.value`, generators) | ⏳ not started |
+| Hole-marker lowering pass | ✅ working |
+| Jsonnet authoring layer (`helm.value`, generators) | 🚧 core working (deployment/service/statefulset/pdb) |
+| Config-mount primitive + CRD generators | ⏳ planned |
 | Tempo descriptors + example wiring | ⏳ not started |
 
 See [`DESIGN.md` §14](./DESIGN.md) for the roadmap.
@@ -36,10 +38,14 @@ See [`DESIGN.md` §14](./DESIGN.md) for the roadmap.
 ## Try it
 
 ```bash
-go run ./cmd/stamp --in testdata/minimal.json --out /tmp/chart
+# From a jsonnet entrypoint (components + generators):
+go run ./cmd/stamp --jsonnet examples/web/main.jsonnet --out /tmp/chart
+
+# Or from a hand-written interchange JSON document:
+go run ./cmd/stamp --in testdata/installable.json --out /tmp/chart
 ```
 
-Renders the fixture into a Helm chart under `/tmp/chart`. `--check` compares against an
+Renders into an installable Helm chart under `/tmp/chart`. `--check` compares against an
 existing chart and exits non-zero on drift (for CI); `--jsonnet <file>` runs jsonnet and uses
 its stdout as the interchange input.
 
