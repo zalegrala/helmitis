@@ -15,6 +15,10 @@ type File struct {
 // Build turns a validated interchange Document into the full set of chart files.
 // Output is deterministic: stable file ordering and stable content.
 func Build(doc interchange.Document) ([]File, error) {
+	doc, err := Lower(doc)
+	if err != nil {
+		return nil, err
+	}
 	var files []File
 
 	for _, r := range doc.Resources {

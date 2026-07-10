@@ -1,0 +1,74 @@
+{
+  "chart": {
+    "name": "acceptance",
+    "version": "0.1.0",
+    "appVersion": "2.6.0",
+    "description": "Realistic fixture that must render an installable chart",
+    "kubeVersion": ">=1.28-0"
+  },
+  "components": {
+    "web": { "enabled": true, "workload": "Deployment" }
+  },
+  "resources": [
+    {
+      "file": "templates/web/deployment.yaml",
+      "component": "web",
+      "gvk": "apps/v1/Deployment",
+      "gate": "web.enabled",
+      "manifest": {
+        "apiVersion": "apps/v1",
+        "kind": "Deployment",
+        "metadata": {
+          "name": "web",
+          "labels": { "app.kubernetes.io/name": "web" }
+        },
+        "spec": {
+          "replicas": {
+            "__cw_hole__": {
+              "path": "web.replicas",
+              "default": 1,
+              "schema": { "type": "integer", "minimum": 1 }
+            }
+          },
+          "selector": { "matchLabels": { "app.kubernetes.io/name": "web" } },
+          "template": {
+            "metadata": { "labels": { "app.kubernetes.io/name": "web" } },
+            "spec": {
+              "containers": [
+                {
+                  "name": "web",
+                  "image": {
+                    "__cw_hole__": {
+                      "path": "web.image",
+                      "default": "grafana/tempo:2.6.0",
+                      "render": "quote"
+                    }
+                  },
+                  "ports": [ { "name": "http", "containerPort": 3200 } ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "file": "templates/web/service.yaml",
+      "component": "web",
+      "gvk": "v1/Service",
+      "gate": "web.enabled",
+      "manifest": {
+        "apiVersion": "v1",
+        "kind": "Service",
+        "metadata": {
+          "name": "web",
+          "labels": { "app.kubernetes.io/name": "web" }
+        },
+        "spec": {
+          "selector": { "app.kubernetes.io/name": "web" },
+          "ports": [ { "name": "http", "port": 3200, "targetPort": "http" } ]
+        }
+      }
+    }
+  ]
+}
