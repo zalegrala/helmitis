@@ -3,7 +3,7 @@ package stamp
 import (
 	"sort"
 
-	"github.com/zalegrala/helmitis/interchange"
+	"github.com/zalegrala/chartwright/interchange"
 )
 
 // File is one output file destined for the chart directory.

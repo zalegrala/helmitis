@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/zalegrala/helmitis/interchange"
+	"github.com/zalegrala/chartwright/interchange"
 )
 
 func helmPath(dotted string) string { return ".Values." + dotted }

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/zalegrala/helmitis/interchange"
+	"github.com/zalegrala/chartwright/interchange"
 )
 
 // buildValuesSchema produces a values.schema.json: an object schema whose

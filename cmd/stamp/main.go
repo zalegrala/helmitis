@@ -8,8 +8,8 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/zalegrala/helmitis/interchange"
-	"github.com/zalegrala/helmitis/stamp"
+	"github.com/zalegrala/chartwright/interchange"
+	"github.com/zalegrala/chartwright/stamp"
 )
 
 const version = "0.0.1-dev"

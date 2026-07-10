@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/zalegrala/helmitis/interchange"
+	"github.com/zalegrala/chartwright/interchange"
 )
 
 func TestRenderResource(t *testing.T) {

@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/zalegrala/helmitis/interchange"
+	"github.com/zalegrala/chartwright/interchange"
 )
 
 func TestSetDottedNested(t *testing.T) {

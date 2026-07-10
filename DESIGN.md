@@ -1,6 +1,6 @@
 # Helm Stamper — Design
 
-> Working repo name: `helmitis` (placeholder, snarky; rename later).
+> Project name: `chartwright` — a maker of charts (as in playwright/shipwright).
 > Status: design agreed, pre-implementation. This document guides future work sessions.
 > Date: 2026-06-12.
 

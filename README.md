@@ -1,7 +1,7 @@
-# helmitis
+# chartwright
 
-> ⚠️ **Early work in progress.** The name is a placeholder and will change. APIs, formats,
-> and structure are unstable and will break without notice.
+> ⚠️ **Early work in progress.** APIs, formats, and structure are unstable and will break
+> without notice.
 
 A spec-driven **Helm chart stamper**. Instead of hand-maintaining a Helm chart, you describe
 components once and generate a complete, installable chart deterministically:

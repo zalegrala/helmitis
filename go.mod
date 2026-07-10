@@ -1,4 +1,4 @@
-module github.com/zalegrala/helmitis
+module github.com/zalegrala/chartwright
 
 go 1.26.4
 

@@ -3,7 +3,7 @@ package stamp
 import (
 	"testing"
 
-	"github.com/zalegrala/helmitis/interchange"
+	"github.com/zalegrala/chartwright/interchange"
 )
 
 func TestRenderModeInference(t *testing.T) {

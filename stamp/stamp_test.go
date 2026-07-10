@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/zalegrala/helmitis/interchange"
+	"github.com/zalegrala/chartwright/interchange"
 )
 
 func loadMinimal(t *testing.T) interchange.Document {

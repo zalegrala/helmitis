@@ -77,8 +77,8 @@ One responsibility per file. `stamp.go` orchestrates; everything else is a focus
 
 Run:
 ```bash
-cd /home/zach/go/src/github.com/zalegrala/helmitis
-go mod init github.com/zalegrala/helmitis
+cd /home/zach/go/src/github.com/zalegrala/chartwright
+go mod init github.com/zalegrala/chartwright
 go get sigs.k8s.io/yaml@latest
 go get github.com/santhosh-tekuri/jsonschema/v6@latest
 ```
@@ -641,7 +641,7 @@ package stamp
 import (
 	"testing"
 
-	"github.com/zalegrala/helmitis/interchange"
+	"github.com/zalegrala/chartwright/interchange"
 )
 
 func TestRenderModeInference(t *testing.T) {
@@ -724,7 +724,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/zalegrala/helmitis/interchange"
+	"github.com/zalegrala/chartwright/interchange"
 )
 
 func helmPath(dotted string) string { return ".Values." + dotted }
@@ -805,7 +805,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/zalegrala/helmitis/interchange"
+	"github.com/zalegrala/chartwright/interchange"
 )
 
 func TestSubstituteScalar(t *testing.T) {
@@ -848,7 +848,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/zalegrala/helmitis/interchange"
+	"github.com/zalegrala/chartwright/interchange"
 )
 
 // substitute replaces each hole's sentinel token in the marshaled YAML text
@@ -1029,7 +1029,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/zalegrala/helmitis/interchange"
+	"github.com/zalegrala/chartwright/interchange"
 )
 
 func TestRenderResource(t *testing.T) {
@@ -1080,7 +1080,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/zalegrala/helmitis/interchange"
+	"github.com/zalegrala/chartwright/interchange"
 	"sigs.k8s.io/yaml"
 )
 
@@ -1144,7 +1144,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/zalegrala/helmitis/interchange"
+	"github.com/zalegrala/chartwright/interchange"
 )
 
 func TestSetDottedNested(t *testing.T) {
@@ -1206,7 +1206,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/zalegrala/helmitis/interchange"
+	"github.com/zalegrala/chartwright/interchange"
 )
 
 // setDotted writes val into root following a dotted path, creating intermediate
@@ -1285,7 +1285,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/zalegrala/helmitis/interchange"
+	"github.com/zalegrala/chartwright/interchange"
 )
 
 func TestBuildValuesSchema(t *testing.T) {
@@ -1329,7 +1329,7 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/zalegrala/helmitis/interchange"
+	"github.com/zalegrala/chartwright/interchange"
 )
 
 // buildValuesSchema produces a values.schema.json: an object schema whose
@@ -1407,7 +1407,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/zalegrala/helmitis/interchange"
+	"github.com/zalegrala/chartwright/interchange"
 )
 
 func TestChartYAML(t *testing.T) {
@@ -1443,7 +1443,7 @@ Create `stamp/chart.go`:
 package stamp
 
 import (
-	"github.com/zalegrala/helmitis/interchange"
+	"github.com/zalegrala/chartwright/interchange"
 	"sigs.k8s.io/yaml"
 )
 
@@ -1515,7 +1515,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/zalegrala/helmitis/interchange"
+	"github.com/zalegrala/chartwright/interchange"
 )
 
 func loadMinimal(t *testing.T) interchange.Document {
@@ -1588,7 +1588,7 @@ package stamp
 import (
 	"sort"
 
-	"github.com/zalegrala/helmitis/interchange"
+	"github.com/zalegrala/chartwright/interchange"
 )
 
 // File is one output file destined for the chart directory.
@@ -1847,8 +1847,8 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/zalegrala/helmitis/interchange"
-	"github.com/zalegrala/helmitis/stamp"
+	"github.com/zalegrala/chartwright/interchange"
+	"github.com/zalegrala/chartwright/stamp"
 )
 
 const version = "0.0.1-dev"

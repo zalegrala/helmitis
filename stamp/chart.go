@@ -1,7 +1,7 @@
 package stamp
 
 import (
-	"github.com/zalegrala/helmitis/interchange"
+	"github.com/zalegrala/chartwright/interchange"
 	"sigs.k8s.io/yaml"
 )
 
