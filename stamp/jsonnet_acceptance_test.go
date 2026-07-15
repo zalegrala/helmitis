@@ -56,7 +56,7 @@ func TestJsonnetExampleInstallable(t *testing.T) {
 	if err != nil {
 		t.Skip("kubeconform not on PATH; validated lint+template only")
 	}
-	kc := exec.Command(kube, "-strict", "-summary", "-")
+	kc := exec.Command(kube, append(kubeconformArgs, "-")...)
 	kc.Stdin = strings.NewReader(string(rendered))
 	if out, err := kc.CombinedOutput(); err != nil {
 		t.Fatalf("kubeconform rejected the jsonnet-produced chart:\n%s", out)
