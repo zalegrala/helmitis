@@ -17,6 +17,11 @@ Two failure modes from the existing `tempo-distributed` chart inform this design
    (both Kubernetes deployment practices and Tempo-specific ones), so consequences go
    unreviewed and the community inherits questionable defaults.
 
+The one-line thesis: **users want to *consume* Helm; authors don't want to *author* Helm.**
+chartwright lets a team maintain a chart through *mechanical leverage* — author in jsonnet
+(which the team already uses), and the machine produces the Helm chart nobody wants to
+hand-write. The deliverable this project cares about is the **machinery**, not any one chart.
+
 The goal is a **spec-driven stamper**: a consumable description of components renders a
 complete Helm chart (Deployments, StatefulSets, Services, etc.) on disk, ready to install.
 The same approach should serve both the microservices topology and the single-binary, and
