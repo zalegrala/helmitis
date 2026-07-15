@@ -70,7 +70,7 @@ func TestInstallableChart(t *testing.T) {
 	if err := os.WriteFile(renderedPath, rendered, 0o644); err != nil {
 		t.Fatal(err)
 	}
-	if out, err := exec.Command(kube, "-strict", "-summary", renderedPath).CombinedOutput(); err != nil {
+	if out, err := exec.Command(kube, append(kubeconformArgs, renderedPath)...).CombinedOutput(); err != nil {
 		t.Fatalf("kubeconform rejected the rendered chart:\n%s", out)
 	}
 }

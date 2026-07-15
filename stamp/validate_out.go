@@ -6,6 +6,17 @@ import (
 	"strings"
 )
 
+// kubeconformArgs are the shared kubeconform flags. `default` keeps built-in
+// Kubernetes schemas; the second location validates CRDs against the community
+// CRD catalog (so ServiceMonitor, VerticalPodAutoscaler, etc. are checked, not
+// skipped). Used by ValidateOutput and the acceptance tests so the gate is
+// identical everywhere.
+var kubeconformArgs = []string{
+	"-strict", "-summary",
+	"-schema-location", "default",
+	"-schema-location", "https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json",
+}
+
 // ValidateOutput runs helm lint (and kubeconform if available) against the
 // rendered chart directory. Missing tools are skipped with no error, so the
 // stamper works in minimal environments; present tools that report problems
@@ -30,7 +41,7 @@ func ValidateOutput(chartDir string) error {
 		if err != nil {
 			return fmt.Errorf("helm template failed: %w", err)
 		}
-		kc := exec.Command(kube, "-strict", "-summary", "-")
+		kc := exec.Command(kube, append(kubeconformArgs, "-")...)
 		kc.Stdin = strings.NewReader(string(rendered))
 		var kbuf strings.Builder
 		kc.Stdout = &kbuf
