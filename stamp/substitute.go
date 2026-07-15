@@ -23,7 +23,7 @@ func substitute(yamlText string, holes []interchange.Hole, tokens map[int]string
 			if err := replaceTokenInline(lines, tok, h.Raw); err != nil {
 				return "", fmt.Errorf("hole %q: %w", h.Path, err)
 			}
-		case "block", "with":
+		case "block", "with", "block-string":
 			var err error
 			lines, err = replaceTokenBlock(lines, tok, h)
 			if err != nil {
@@ -47,8 +47,13 @@ func replaceTokenInline(lines []string, tok, expr string) error {
 }
 
 // replaceTokenBlock replaces a whole "key: TOKEN" line with a block-rendered
-// hole (toYaml | nindent), optionally guarded by {{- with }}.
+// hole (toYaml | nindent). Modes:
+//   - "with":         guarded by {{- with }} so the key vanishes when empty
+//   - "block-string": the value is a YAML literal block (`key: |`), i.e. the
+//     structured value is embedded as a string (e.g. a config in a ConfigMap)
+//   - "block":        the value is a nested YAML mapping/sequence
 func replaceTokenBlock(lines []string, tok string, h interchange.Hole) ([]string, error) {
+	mode := renderMode(h)
 	for i, line := range lines {
 		pos := strings.Index(line, tok)
 		if pos < 0 {
@@ -61,10 +66,13 @@ func replaceTokenBlock(lines []string, tok string, h interchange.Hole) ([]string
 		// Preserve the key prefix verbatim (everything before the sentinel value),
 		// so keys containing colons or requiring quotes survive untouched.
 		keyLine := strings.TrimRight(line[:pos], " ")
+		if mode == "block-string" {
+			keyLine += " |" // YAML literal block scalar: value embedded as a string
+		}
 		path := helmPath(h.Path)
 
 		var repl []string
-		if renderMode(h) == "with" {
+		if mode == "with" {
 			repl = []string{
 				pad + "{{- with " + path + " }}",
 				keyLine,
