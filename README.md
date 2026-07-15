@@ -29,9 +29,9 @@ config rather than exposing every knob. See [`DESIGN.md`](./DESIGN.md) for the f
 |-----------|--------|
 | Stamper core (interchange → chart) | ✅ working |
 | Hole-marker lowering pass | ✅ working |
-| Jsonnet authoring layer (`helm.value`, generators) | 🚧 working (deployment/service/statefulset/pdb/configmap) |
+| Jsonnet authoring layer (`helm.value`, generators) | ✅ working (deployment/service/statefulset/pdb/configmap/vpa/servicemonitor) |
 | Config-mount primitive (structured config → ConfigMap → mount) | ✅ working |
-| CRD generators (vpa, servicemonitor) | ⏳ planned |
+| CRD generators + kubeconform CRD validation | ✅ working |
 | Tempo descriptors + example wiring | ⏳ not started |
 
 See [`DESIGN.md` §14](./DESIGN.md) for the roadmap.
