@@ -18,6 +18,10 @@ func buildValuesSchema(doc interchange.Document) ([]byte, error) {
 	}
 	for _, r := range doc.Resources {
 		for _, h := range r.Holes {
+			// raw holes are verbatim Helm expressions, not values.yaml entries.
+			if h.Render == "raw" {
+				continue
+			}
 			var leaf interface{}
 			if len(h.Schema) > 0 {
 				if err := json.Unmarshal(h.Schema, &leaf); err != nil {

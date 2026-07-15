@@ -22,17 +22,29 @@
     resources: std.flattenArrays([
       // inject the component's own name so generators can reference c.name
       local c = components[name] { name: name };
-      [
-        {
-          file: 'templates/%s/%s.yaml' % [name, genName],
-          component: name,
-          gvk: generators[genName].gvk,
-          gate: name + '.enabled',
-          manifest: generators[genName].build(c),
-        }
+      std.flattenArrays([
+        (
+          // build() may return a single object or an array of objects (e.g. one
+          // ConfigMap per config entry). Normalize to a list and emit one file
+          // per object; multi-object generators get an index suffix.
+          local built = generators[genName].build(c);
+          local items = if std.isArray(built) then built else [built];
+          [
+            {
+              file: if std.length(items) == 1
+              then 'templates/%s/%s.yaml' % [name, genName]
+              else 'templates/%s/%s-%d.yaml' % [name, genName, i],
+              component: name,
+              gvk: generators[genName].gvk,
+              gate: name + '.enabled',
+              manifest: items[i],
+            }
+            for i in std.range(0, std.length(items) - 1)
+          ]
+        )
         for genName in std.get(components[name], 'generators', [])
         if !std.objectHas(generators[genName], 'when') || generators[genName].when(c)
-      ]
+      ])
       for name in std.objectFields(components)
     ]),
   },
