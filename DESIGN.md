@@ -432,3 +432,40 @@ tracked follow-up (issue #8).
   colons/quotes survive.
 - **Hole path shadowing a component gate** (#6): `buildValues` now rejects a hole whose path
   equals a `<component>.enabled` gate.
+
+## 15. Kind coverage & extension points
+
+Survey of `grafana/helm-charts` (all 25 charts) for the *set of Kubernetes kinds* real charts
+emit — a check that the architecture leaves room for what we'll eventually need, **not** a
+commitment to implement now. Kinds seen (file counts): Service, Deployment, StatefulSet,
+DaemonSet, Job, Pod; Ingress, NetworkPolicy; ConfigMap, Secret; HorizontalPodAutoscaler,
+PodDisruptionBudget, VerticalPodAutoscaler, ScaledObject (KEDA); ServiceAccount, Role,
+RoleBinding, ClusterRole, ClusterRoleBinding; PersistentVolumeClaim (no StorageClass/PV —
+charts reference existing ones); PodSecurityPolicy, SecurityContextConstraints,
+Validating/MutatingWebhookConfiguration; ServiceMonitor, PrometheusRule, and Grafana-Agent
+monitoring CRDs.
+
+**How they fit (and what stays open):**
+
+- **Category 1 — per-component generators, zero stamper change.** The large majority
+  (DaemonSet, Job, ServiceAccount, Role/RoleBinding, HPA, Ingress, NetworkPolicy, Secret, PVC,
+  PSP, PrometheusRule, ScaledObject, VPA, ServiceMonitor, webhooks). Each is a
+  `{ gvk, when(c), build(c) }` over descriptor data — the existing pattern. The model handles
+  these by design. CRD *validation* needs kubeconform schemas (#10); generation is unaffected.
+- **Category 2 — multi-object generators** (a `build` returning several objects, e.g. one
+  ConfigMap/Secret per config entry). Tracked in the config-mount work (#9), which adds
+  assembler support for a generator that emits a list.
+- **Category 3 — genuine extension points; keep the door open.** These have no natural home in
+  a purely per-component model and are captured as issues so future work grows cleanly:
+  - **Chart/release-scoped generators** (#11): resources that exist once per release and/or
+    must see *all* components — shared/cluster RBAC, `StorageClass`, cluster-wide NetworkPolicy,
+    an aggregating Ingress, a gateway. Planned shape: a second `build(chart, components)`
+    generator tier alongside the per-component registry.
+  - **Arbitrary gate expressions** (#12): today a resource's gate is hardcoded to
+    `<component>.enabled`; charts also gate on `.Capabilities` and arbitrary values. Planned:
+    let a generator/descriptor supply the gate expression (default unchanged).
+  - **Helm built-ins** (`.Release.*`, `.Chart.*`, `.Capabilities.*`) — already expressible via
+    `helm.raw(path, '{{ .Release.Namespace }}')`; `raw` is the sanctioned path, no change needed.
+
+Design intent: per-component generators remain the default and cover ~90% of real charts; the
+chart-scoped tier and flexible gates are the two structural doors we deliberately leave open.
