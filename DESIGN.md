@@ -462,10 +462,12 @@ monitoring CRDs.
   assembler support for a generator that emits a list.
 - **Category 3 — genuine extension points; keep the door open.** These have no natural home in
   a purely per-component model and are captured as issues so future work grows cleanly:
-  - **Chart/release-scoped generators** (#11): resources that exist once per release and/or
-    must see *all* components — shared/cluster RBAC, `StorageClass`, cluster-wide NetworkPolicy,
-    an aggregating Ingress, a gateway. Planned shape: a second `build(chart, components)`
-    generator tier alongside the per-component registry.
+  - **Chart/release-scoped generators** (#11): ✅ **done.** `render()` takes an optional 4th
+    `chartGenerators` registry of `{ gvk, build(chart, components) }`, evaluated once per release
+    (no owning component, no per-component gate), able to see all components. Rendered at
+    `templates/<genName>.yaml`. Demo: `chartgen/serviceaccount.libsonnet` (a release-wide
+    ServiceAccount). This is the shape for shared/cluster RBAC, `StorageClass`, cluster-wide
+    NetworkPolicy, gateways, aggregating Ingress.
   - **Arbitrary gate expressions** (#12): ✅ **done.** A resource may carry `gateExpr` — a
     verbatim Helm boolean (no `.Values.` prefix) taking precedence over the `<component>.enabled`
     default. Jsonnet: `helm.gate.{enabled,hasAPI,kubeAtLeast,all}` + a generator-level `gate(c)`

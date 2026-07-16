@@ -8,7 +8,11 @@
   //               descriptor: { enabled?=true, workload?='Deployment',
   //                             generators: [<genName>, ...], ...arbitrary data }
   //   generators: { <genName>: { gvk, when(c)?, build(c) }, ... } registry
-  render(chart, components, generators):: {
+  //   chartGenerators: { <genName>: { gvk, build(chart, components) }, ... }
+  //                     release-scoped generators, evaluated once, that may see
+  //                     ALL components — e.g. shared RBAC, a gateway, cluster-wide
+  //                     NetworkPolicy. Optional. (DESIGN §15)
+  render(chart, components, generators, chartGenerators={}):: {
     chart: chart,
 
     components: {
@@ -19,7 +23,27 @@
       for name in std.objectFields(components)
     },
 
-    resources: std.flattenArrays([
+    // release-scoped resources: one pass over chartGenerators, no owning
+    // component, no per-component gate.
+    local chartScoped = std.flattenArrays([
+      (
+        local built = chartGenerators[genName].build(chart, components);
+        local items = if std.isArray(built) then built else [built];
+        [
+          {
+            file: if std.length(items) == 1
+            then 'templates/%s.yaml' % genName
+            else 'templates/%s-%d.yaml' % [genName, i],
+            gvk: chartGenerators[genName].gvk,
+            manifest: items[i],
+          }
+          for i in std.range(0, std.length(items) - 1)
+        ]
+      )
+      for genName in std.objectFields(chartGenerators)
+    ]),
+
+    resources: chartScoped + std.flattenArrays([
       // inject the component's own name so generators can reference c.name
       local c = components[name] { name: name };
       std.flattenArrays([
