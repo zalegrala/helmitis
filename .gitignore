@@ -1,0 +1,8 @@
+# stamped chart output (examples write here in docs/CI)
+/_chart/
+/chart/
+/tmp-chart/
+
+# built binaries
+/stamp
+/cmd/stamp/stamp

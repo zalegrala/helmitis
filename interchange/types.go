@@ -26,10 +26,10 @@ type Component struct {
 }
 
 type Resource struct {
-	File      string                 `json:"file"`
-	Component string                 `json:"component,omitempty"`
-	GVK       string                 `json:"gvk,omitempty"`
-	Gate      string                 `json:"gate,omitempty"`
+	File      string `json:"file"`
+	Component string `json:"component,omitempty"`
+	GVK       string `json:"gvk,omitempty"`
+	Gate      string `json:"gate,omitempty"`
 	// GateExpr is a verbatim Helm boolean expression wrapping the whole resource
 	// in {{- if <expr> }}. Unlike Gate (a values path, prefixed with .Values.),
 	// GateExpr is used as-is — for capability/version gates like
