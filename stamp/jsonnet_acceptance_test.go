@@ -17,6 +17,7 @@ func TestJsonnetExamplesInstallable(t *testing.T) {
 	examples := []string{
 		"../examples/minimal/main.jsonnet",
 		"../examples/web/main.jsonnet",
+		"../examples/version-gating/main.jsonnet",
 	}
 	for _, ex := range examples {
 		t.Run(ex, func(t *testing.T) { assertJsonnetInstallable(t, ex) })

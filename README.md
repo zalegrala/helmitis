@@ -46,6 +46,9 @@ go run ./cmd/stamp --jsonnet examples/minimal/main.jsonnet --out /tmp/chart
 # Fuller showcase — config-mount, CRDs, capability gates, chart-scoped RBAC:
 go run ./cmd/stamp --jsonnet examples/web/main.jsonnet --out /tmp/chart
 
+# Version/capability gating — apiVersion switch + whole-resource gates by k8s version/API:
+go run ./cmd/stamp --jsonnet examples/version-gating/main.jsonnet --out /tmp/chart
+
 # Or from a hand-written interchange JSON document (no jsonnet):
 go run ./cmd/stamp --in testdata/installable.json --out /tmp/chart
 ```
