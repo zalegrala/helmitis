@@ -1,5 +1,7 @@
 # chartwright
 
+[![ci](https://github.com/zalegrala/chartwright/actions/workflows/ci.yml/badge.svg)](https://github.com/zalegrala/chartwright/actions/workflows/ci.yml)
+
 > ⚠️ **Early work in progress.** APIs, formats, and structure are unstable and will break
 > without notice.
 
