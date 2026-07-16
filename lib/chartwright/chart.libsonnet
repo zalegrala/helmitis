@@ -36,14 +36,21 @@
               else 'templates/%s/%s-%d.yaml' % [name, genName, i],
               component: name,
               gvk: generators[genName].gvk,
-              gate: name + '.enabled',
               manifest: items[i],
-            }
+            } + (
+              // A generator may define gate(c) to override the default
+              // `<name>.enabled` gate with an arbitrary expression (e.g. a
+              // capability/version gate). gateExpr is emitted verbatim.
+              // objectHasAll (not objectHas) so hidden `::` methods are seen.
+              if std.objectHasAll(generators[genName], 'gate')
+              then { gateExpr: generators[genName].gate(c) }
+              else { gate: name + '.enabled' }
+            )
             for i in std.range(0, std.length(items) - 1)
           ]
         )
         for genName in std.get(components[name], 'generators', [])
-        if !std.objectHas(generators[genName], 'when') || generators[genName].when(c)
+        if !std.objectHasAll(generators[genName], 'when') || generators[genName].when(c)
       ])
       for name in std.objectFields(components)
     ]),

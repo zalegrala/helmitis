@@ -30,8 +30,14 @@ type Resource struct {
 	Component string                 `json:"component,omitempty"`
 	GVK       string                 `json:"gvk,omitempty"`
 	Gate      string                 `json:"gate,omitempty"`
-	Manifest  map[string]interface{} `json:"manifest"`
-	Holes     []Hole                 `json:"holes,omitempty"`
+	// GateExpr is a verbatim Helm boolean expression wrapping the whole resource
+	// in {{- if <expr> }}. Unlike Gate (a values path, prefixed with .Values.),
+	// GateExpr is used as-is — for capability/version gates like
+	// `.Capabilities.APIVersions.Has "policy/v1/PodDisruptionBudget"`. Takes
+	// precedence over Gate when set.
+	GateExpr string                 `json:"gateExpr,omitempty"`
+	Manifest map[string]interface{} `json:"manifest"`
+	Holes    []Hole                 `json:"holes,omitempty"`
 }
 
 // Hole marks a variable point in a manifest.

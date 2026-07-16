@@ -5,6 +5,12 @@ local helm = import '../helm.libsonnet';
 {
   gvk: 'policy/v1/PodDisruptionBudget',
   when(c):: std.get(c, 'pdb', null) != null,
+  // Only emit on clusters that actually expose policy/v1 (and the component is
+  // enabled) — a whole-resource capability gate (#12).
+  gate(c):: helm.gate.all([
+    helm.gate.enabled(c),
+    helm.gate.hasAPI('policy/v1/PodDisruptionBudget'),
+  ]),
   build(c):: {
     apiVersion: 'policy/v1',
     kind: 'PodDisruptionBudget',

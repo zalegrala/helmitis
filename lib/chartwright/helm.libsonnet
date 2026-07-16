@@ -23,4 +23,18 @@
   // blockValue is sugar for a structured (object/array) hole rendered as
   // `toYaml | nindent` — e.g. resources, nodeSelector, or a whole config object.
   blockValue(path, default=null, opts={}):: self.value(path, default, { render: 'block' } + opts),
+
+  // gate builds Helm boolean expressions for a resource's whole-resource gate.
+  // A generator that defines `gate(c)` overrides the default `<name>.enabled`
+  // gate with one of these (or any custom expression string). See DESIGN.md §15.
+  gate:: {
+    // enabled: the component's install-time on/off flag (the default gate).
+    enabled(c):: '.Values.%s.enabled' % c.name,
+    // hasAPI: true when the cluster exposes the given group/version[/kind].
+    hasAPI(api):: '(.Capabilities.APIVersions.Has "%s")' % api,
+    // kubeAtLeast: true when the cluster's Kubernetes version is >= v (e.g. "1.26-0").
+    kubeAtLeast(v):: '(semverCompare ">=%s" .Capabilities.KubeVersion.Version)' % v,
+    // all: AND several gate expressions together.
+    all(exprs):: if std.length(exprs) == 1 then exprs[0] else 'and ' + std.join(' ', exprs),
+  },
 }

@@ -38,6 +38,7 @@
           "component": { "type": "string" },
           "gvk": { "type": "string" },
           "gate": { "type": "string" },
+          "gateExpr": { "type": "string" },
           "manifest": { "type": "object" },
           "holes": {
             "type": "array",

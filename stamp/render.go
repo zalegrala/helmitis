@@ -37,11 +37,19 @@ func renderResource(r interchange.Resource) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	if r.Gate != "" {
+	// GateExpr (verbatim) wins over Gate (a values path). Either wraps the whole
+	// resource in {{- if <expr> }} ... {{- end }}.
+	gateExpr := ""
+	if r.GateExpr != "" {
+		gateExpr = r.GateExpr
+	} else if r.Gate != "" {
+		gateExpr = ".Values." + r.Gate
+	}
+	if gateExpr != "" {
 		if !strings.HasSuffix(text, "\n") {
 			text += "\n"
 		}
-		text = "{{- if .Values." + r.Gate + " }}\n" + text + "{{- end }}\n"
+		text = "{{- if " + gateExpr + " }}\n" + text + "{{- end }}\n"
 	}
 	return text, nil
 }
