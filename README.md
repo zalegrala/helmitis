@@ -51,6 +51,9 @@ go run ./cmd/stamp --jsonnet examples/web/main.jsonnet --out /tmp/chart
 # Version/capability gating — apiVersion switch + whole-resource gates by k8s version/API:
 go run ./cmd/stamp --jsonnet examples/version-gating/main.jsonnet --out /tmp/chart
 
+# Tempo-flavored demo — 4 microservices components + one structured config mounted across all:
+go run ./cmd/stamp --jsonnet examples/tempo/main.jsonnet --out /tmp/chart
+
 # Or from a hand-written interchange JSON document (no jsonnet):
 go run ./cmd/stamp --in testdata/installable.json --out /tmp/chart
 ```
