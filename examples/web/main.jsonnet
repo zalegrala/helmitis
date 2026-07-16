@@ -13,6 +13,7 @@ local pdb = import '../../lib/chartwright/generators/pdb.libsonnet';
 local configmap = import '../../lib/chartwright/generators/configmap.libsonnet';
 local vpa = import '../../lib/chartwright/generators/vpa.libsonnet';
 local servicemonitor = import '../../lib/chartwright/generators/servicemonitor.libsonnet';
+local serviceaccount = import '../../lib/chartwright/chartgen/serviceaccount.libsonnet';
 
 cw.render(
   { name: 'acceptance', version: '0.1.0', appVersion: '2.6.0' },
@@ -56,4 +57,6 @@ cw.render(
     vpa: vpa,
     servicemonitor: servicemonitor,
   },
+  // chart-scoped generators (run once per release, see all components)
+  { serviceaccount: serviceaccount },
 )

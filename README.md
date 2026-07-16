@@ -40,16 +40,20 @@ See [`DESIGN.md` §14](./DESIGN.md) for the roadmap.
 ## Try it
 
 ```bash
-# From a jsonnet entrypoint (components + generators):
+# Smallest example — one component → Deployment + Service (start here):
+go run ./cmd/stamp --jsonnet examples/minimal/main.jsonnet --out /tmp/chart
+
+# Fuller showcase — config-mount, CRDs, capability gates, chart-scoped RBAC:
 go run ./cmd/stamp --jsonnet examples/web/main.jsonnet --out /tmp/chart
 
-# Or from a hand-written interchange JSON document:
+# Or from a hand-written interchange JSON document (no jsonnet):
 go run ./cmd/stamp --in testdata/installable.json --out /tmp/chart
 ```
 
-Renders into an installable Helm chart under `/tmp/chart`. `--check` compares against an
-existing chart and exits non-zero on drift (for CI); `--jsonnet <file>` runs jsonnet and uses
-its stdout as the interchange input.
+`examples/minimal/main.jsonnet` is ~15 readable lines and the best first read. Renders into an
+installable Helm chart under `/tmp/chart`. `--check` compares against an existing chart and
+exits non-zero on drift (for CI); `--jsonnet <file>` runs jsonnet and uses its stdout as the
+interchange input.
 
 ## How this is being built
 

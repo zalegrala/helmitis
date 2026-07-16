@@ -8,11 +8,23 @@ import (
 	"github.com/zalegrala/chartwright/interchange"
 )
 
-// TestJsonnetExampleInstallable exercises the full producer→consumer pipeline:
-// jsonnet entrypoint → interchange (with inline hole markers) → lower → build →
-// installable chart. It is the end-to-end proof that the Plan 2b authoring layer
-// produces charts that pass the installability gate. Skips when tools are absent.
-func TestJsonnetExampleInstallable(t *testing.T) {
+// TestJsonnetExamplesInstallable exercises the full producer→consumer pipeline
+// for each committed example: jsonnet entrypoint → interchange (with inline hole
+// markers) → lower → build → installable chart. End-to-end proof that the
+// authoring layer produces charts that pass the installability gate. Skips when
+// tools are absent.
+func TestJsonnetExamplesInstallable(t *testing.T) {
+	examples := []string{
+		"../examples/minimal/main.jsonnet",
+		"../examples/web/main.jsonnet",
+	}
+	for _, ex := range examples {
+		t.Run(ex, func(t *testing.T) { assertJsonnetInstallable(t, ex) })
+	}
+}
+
+func assertJsonnetInstallable(t *testing.T, entrypoint string) {
+	t.Helper()
 	jsonnet, err := exec.LookPath("jsonnet")
 	if err != nil {
 		t.Skip("jsonnet not on PATH; skipping jsonnet pipeline gate")
@@ -22,7 +34,7 @@ func TestJsonnetExampleInstallable(t *testing.T) {
 		t.Skip("helm not on PATH; skipping installability gate")
 	}
 
-	interchangeJSON, err := exec.Command(jsonnet, "../examples/web/main.jsonnet").Output()
+	interchangeJSON, err := exec.Command(jsonnet, entrypoint).Output()
 	if err != nil {
 		msg := err.Error()
 		if ee, ok := err.(*exec.ExitError); ok {
