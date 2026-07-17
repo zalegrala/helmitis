@@ -3,6 +3,6 @@
 /chart/
 /tmp-chart/
 
-# built binaries
-/stamp
-/cmd/stamp/stamp
+# built binaries — build with: go build -o bin/stamp ./cmd/stamp
+# (avoid a bare /stamp entry: it would also match the stamp/ package directory)
+/bin/
